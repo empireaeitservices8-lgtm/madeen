@@ -1,0 +1,15 @@
+# Example dataset config (YOLO format). Put your images and labels like:
+#   training/datasets/ppe/images/train/*.jpg   training/datasets/ppe/labels/train/*.txt
+#   training/datasets/ppe/images/val/*.jpg     training/datasets/ppe/labels/val/*.txt
+# Keep the class order below if you start from the bundled model (weights/ppe_yolov8n.pt).
+path: datasets/ppe
+train: images/train
+val: images/val
+
+names:
+  0: Gloves
+  1: Vest
+  2: goggles
+  3: helmet
+  4: mask
+  5: safety_shoe

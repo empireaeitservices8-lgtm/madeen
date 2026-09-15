@@ -1,0 +1,14 @@
+# For GPU inference install PyTorch with CUDA first, e.g.:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+ultralytics==8.3.0
+pillow==10.4.0
+numpy==1.26.4
+websockets==13.1
+sqlalchemy==2.0.36
+bcrypt==4.2.0
+pyjwt==2.9.0
+python-multipart==0.0.12
+python-dotenv
+google-genai
