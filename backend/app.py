@@ -42,7 +42,7 @@ async def lifespan(_: FastAPI):
         if not db.query(Site).first():
             db.add(Site(name='Site Alpha', location='North Wing'))
             db.commit()
-            db.add(Worker(name='John Doe', site_id=1, role='Welder'))
+            db.add(Worker(full_name='John Doe', site_id=1, trade='Welder'))
             db.commit()
         
         # Auto-seed questions if empty
