@@ -28,16 +28,32 @@ from routes_test import router as test_router
 from routes_tool import router as tool_router
 
 
+import os
 import asyncio
+from db import Site, Worker, Question
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
     with SessionLocal() as db:
         ensure_default_admin(db)
-    
+        
+        # Auto-seed dummy data if the database is brand new (useful for Render deployment)
+        if not db.query(Site).first():
+            db.add(Site(name='Site Alpha', location='North Wing'))
+            db.commit()
+            db.add(Worker(name='John Doe', site_id=1, role='Welder'))
+            db.commit()
+        
+        # Auto-seed questions if empty
+        if not db.query(Question).first():
+            os.system("python scripts/generate_hot_work.py")
+            os.system("python scripts/generate_cold_work.py")
+            
     # Load models in the background so we don't block Uvicorn from binding to the port!
     # Render times out if the port isn't bound within a few minutes.
+    asyncio.create_task(run_in_threadpool(detector.load_models))
+    yield
     asyncio.create_task(run_in_threadpool(detector.load_models))
     yield
 
