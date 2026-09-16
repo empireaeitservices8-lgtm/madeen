@@ -3,7 +3,7 @@
 import { ShieldCheck, Truck, ClipboardCheck } from "lucide-react";
 
 interface Props {
-  onSelect: (module: "ppe" | "vehicle" | "test") => void;
+  onSelect: (module: "ppe" | "vehicle" | "test-hot" | "test-cold") => void;
 }
 
 export default function ModulePicker({ onSelect }: Props) {
