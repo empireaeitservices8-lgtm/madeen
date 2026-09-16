@@ -12,6 +12,8 @@ PPE_ITEMS = ["helmet", "vest", "gloves", "boots", "mask"]
 
 VEHICLE_ITEMS = ["lights", "tires", "mirrors", "windshield", "fire_extinguisher", "beacon", "reverse_alarm", "body_condition"]
 
+TOOL_ITEMS = ["casing", "cords", "guards", "switches", "handles", "overall_condition"]
+
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
@@ -128,16 +130,7 @@ class VehicleScan(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
 
-    # one column per checklist item
-    lights: Mapped[str] = mapped_column(String(12))
-    tires: Mapped[str] = mapped_column(String(12))
-    mirrors: Mapped[str] = mapped_column(String(12))
-    windshield: Mapped[str] = mapped_column(String(12))
-    fire_extinguisher: Mapped[str] = mapped_column(String(12))
-    beacon: Mapped[str] = mapped_column(String(12))
-    reverse_alarm: Mapped[str] = mapped_column(String(12))
-    body_condition: Mapped[str] = mapped_column(String(12))
-
+    items_data: Mapped[dict] = mapped_column(JSON, default=dict)
     overall: Mapped[str] = mapped_column(String(12), index=True)
     details: Mapped[dict] = mapped_column(JSON, default=dict)
     snapshot_path: Mapped[Optional[str]] = mapped_column(String(255))
@@ -146,7 +139,31 @@ class VehicleScan(Base):
     user: Mapped[User] = relationship()
 
     def items(self) -> dict:
-        return {item: getattr(self, item) for item in VEHICLE_ITEMS}
+        return self.items_data
+
+
+class ToolScan(Base):
+    """One recorded mining tool inspection. Items are pass | fail | not_visible."""
+
+    __tablename__ = "tool_scans"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tool_type: Mapped[str] = mapped_column(String(80), index=True)
+    site_id: Mapped[int] = mapped_column(ForeignKey("sites.id"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+    # one column per checklist item
+    items_data: Mapped[dict] = mapped_column(JSON, default=dict)
+    overall: Mapped[str] = mapped_column(String(12), index=True)
+    details: Mapped[dict] = mapped_column(JSON, default=dict)
+    snapshot_path: Mapped[Optional[str]] = mapped_column(String(255))
+
+    site: Mapped[Site] = relationship()
+    user: Mapped[User] = relationship()
+
+    def items(self) -> dict:
+        return self.items_data
 
 
 class Question(Base):
@@ -161,6 +178,7 @@ class Question(Base):
     option_c: Mapped[str] = mapped_column(String(200))
     option_d: Mapped[str] = mapped_column(String(200))
     correct_answer: Mapped[str] = mapped_column(String(1))  # A, B, C, or D
+    category: Mapped[str] = mapped_column(String(50), default="general")
 
 
 class TestAttempt(Base):

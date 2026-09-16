@@ -25,6 +25,7 @@ from routes_manage import router as manage_router
 from routes_scans import router as scans_router
 from routes_vehicle import router as vehicle_router
 from routes_test import router as test_router
+from routes_tool import router as tool_router
 
 
 @asynccontextmanager
@@ -50,6 +51,7 @@ app.include_router(manage_router)
 app.include_router(scans_router)
 app.include_router(vehicle_router)
 app.include_router(test_router)
+app.include_router(tool_router)
 
 
 @app.get("/health")

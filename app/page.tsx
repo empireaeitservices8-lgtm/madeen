@@ -10,8 +10,8 @@ import { clearToken, User as UserType, Site, Worker, WS_BASE, getMe } from "@/li
 import LoginPage from "@/components/LoginPage";
 import ModulePicker from "@/components/ModulePicker";
 import SiteWorkerPicker from "@/components/SiteWorkerPicker";
-import VehiclePicker from "@/components/VehiclePicker";
-import VehicleScannerView from "@/components/VehicleScannerView";
+import MachineryPicker from "@/components/MachineryPicker";
+import MachineryScannerView from "@/components/MachineryScannerView";
 import TestView from "@/components/TestView";
 
 // ── types ──────────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ type PpeResult = Record<string, LiveItemStatus>;
 
 const PPE_ITEMS = ["helmet", "vest", "gloves", "boots", "mask"] as const;
 
-type View = "login" | "module" | "ppe-pick" | "ppe-scan" | "vehicle-pick" | "vehicle-scan" | "test-pick" | "test-take";
+type View = "login" | "module" | "ppe-pick" | "ppe-scan" | "machinery-pick" | "machinery-scan" | "test-pick" | "test-take";
 
 // ── helpers ────────────────────────────────────────────────────────────────
 function getIcon(item: string) {
@@ -51,7 +51,9 @@ export default function App() {
   const [token, setToken]             = useState<string | null>(null);
   const [site, setSite]               = useState<Site | null>(null);
   const [worker, setWorker]           = useState<Worker | null>(null);
-  const [vehicleType, setVehicleType] = useState<string | null>(null);
+  const [machineryCategory, setMachineryCategory] = useState<"vehicle" | "tool" | null>(null);
+  const [machineryType, setMachineryType] = useState<string | null>(null);
+  const [testCategory, setTestCategory] = useState<"hot_work" | "cold_work">("hot_work");
 
   // Restore session on mount
   useEffect(() => {
@@ -67,18 +69,19 @@ export default function App() {
     setCurrentUser(user); setToken(tok); setView("module");
   }
 
-  function handleModuleSelect(module: "ppe" | "vehicle" | "test") {
-    if (module === "ppe") setView("ppe-pick");
-    else if (module === "vehicle") setView("vehicle-pick");
-    else setView("test-pick");
+  function handleModuleSelect(m: string) {
+    if (m === "ppe") setView("ppe-pick");
+    else if (m === "vehicle") setView("machinery-pick");
+    else if (m === "test-hot") { setTestCategory("hot_work"); setView("test-pick"); }
+    else if (m === "test-cold") { setTestCategory("cold_work"); setView("test-pick"); }
   }
 
   function handleStartPpe(s: Site, w: Worker) {
     setSite(s); setWorker(w); setView("ppe-scan");
   }
 
-  function handleStartVehicle(s: Site, vType: string) {
-    setSite(s); setVehicleType(vType); setView("vehicle-scan");
+  function handleStartMachinery(s: Site, category: "vehicle" | "tool", mType: string) {
+    setSite(s); setMachineryCategory(category); setMachineryType(mType); setView("machinery-scan");
   }
 
   function handleStartTest(s: Site, w: Worker) {
@@ -90,7 +93,7 @@ export default function App() {
   }
 
   function handleScanDone() {
-    setSite(null); setWorker(null); setVehicleType(null); setView("module");
+    setSite(null); setWorker(null); setMachineryCategory(null); setMachineryType(null); setView("module");
   }
 
   return (
@@ -121,17 +124,17 @@ export default function App() {
         </main>
       )}
 
-      {view === "vehicle-pick" && (
+      {view === "machinery-pick" && (
         <main className="app-container">
           <TopBar user={currentUser} onLogout={handleLogout} />
-          <VehiclePicker onStart={handleStartVehicle} onBack={() => setView("module")} />
+          <MachineryPicker onStart={handleStartMachinery} onBack={() => setView("module")} />
         </main>
       )}
 
-      {view === "vehicle-scan" && site && vehicleType && token && (
+      {view === "machinery-scan" && site && machineryCategory && machineryType && token && (
         <main className="app-container">
           <TopBar user={currentUser} onLogout={handleLogout} />
-          <VehicleScannerView site={site} vehicleType={vehicleType} token={token} onDone={handleScanDone} />
+          <MachineryScannerView site={site} category={machineryCategory} machineryType={machineryType} token={token} onDone={handleScanDone} />
         </main>
       )}
 
@@ -148,7 +151,7 @@ export default function App() {
       {view === "test-take" && site && worker && (
         <main className="app-container">
           <TopBar user={currentUser} onLogout={handleLogout} />
-          <TestView site={site} worker={worker} onDone={handleScanDone} />
+          <TestView site={site} worker={worker} testCategory={testCategory} onDone={handleScanDone} />
         </main>
       )}
     </div>

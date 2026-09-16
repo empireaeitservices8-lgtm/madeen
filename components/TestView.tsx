@@ -7,10 +7,11 @@ import { Loader2, CheckCircle2, XCircle, AlertCircle, MapPin, User, ChevronLeft 
 interface Props {
   site: Site;
   worker: Worker;
+  testCategory: string;
   onDone: () => void;
 }
 
-export default function TestView({ site, worker, onDone }: Props) {
+export default function TestView({ site, worker, testCategory, onDone }: Props) {
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,11 +21,11 @@ export default function TestView({ site, worker, onDone }: Props) {
   const [result, setResult] = useState<TestAttempt | null>(null);
 
   useEffect(() => {
-    getTestQuestions(worker.id)
+    getTestQuestions(worker.id, testCategory)
       .then(setQuestions)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [worker.id]);
+  }, [worker.id, testCategory]);
 
   function handleSelect(questionId: number, option: string) {
     setAnswers((prev) => ({ ...prev, [questionId]: option }));

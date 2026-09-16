@@ -39,7 +39,7 @@ export default function ModulePicker({ onSelect }: Props) {
           <div className="module-card-arrow">→</div>
         </button>
 
-        {/* Vehicle Inspection */}
+        {/* Machinery Inspection */}
         <button
           id="module-vehicle"
           className="module-card"
@@ -49,37 +49,59 @@ export default function ModulePicker({ onSelect }: Props) {
             <Truck size={36} />
           </div>
           <div className="module-card-body">
-            <div className="module-card-title">Vehicle Inspection</div>
+            <div className="module-card-title">Machinery Inspection</div>
             <div className="module-card-desc">
-              Camera-scan heavy vehicles for safety compliance — lights, tires, mirrors, beacons &amp; more.
+              Camera-scan heavy vehicles and mining tools for safety compliance.
             </div>
             <div className="module-card-pills">
               <span className="module-pill">Dump Truck</span>
               <span className="module-pill">Excavator</span>
-              <span className="module-pill">Bulldozer</span>
-              <span className="module-pill">+9 more</span>
+              <span className="module-pill">Jackhammer</span>
+              <span className="module-pill">Generator</span>
+              <span className="module-pill">+16 more</span>
             </div>
           </div>
           <div className="module-card-arrow">→</div>
         </button>
         
-        {/* Safety Test */}
+        {/* Hot Work Permit Test */}
         <button
-          id="module-test"
+          id="module-test-hot"
           className="module-card"
-          onClick={() => onSelect("test")}
+          onClick={() => onSelect("test-hot")}
+        >
+          <div className="module-card-icon" style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)", boxShadow: "0 4px 14px rgba(239,68,68,.35)" }}>
+            <ClipboardCheck size={36} />
+          </div>
+          <div className="module-card-body">
+            <div className="module-card-title">Hot Work Permit Test</div>
+            <div className="module-card-desc">
+              Conduct a 50-question test covering Hot Work rules and hazards.
+            </div>
+            <div className="module-card-pills">
+              <span className="module-pill">50 Questions</span>
+              <span className="module-pill">Pass: 33%</span>
+            </div>
+          </div>
+          <div className="module-card-arrow">→</div>
+        </button>
+
+        {/* Cold Work Permit Test */}
+        <button
+          id="module-test-cold"
+          className="module-card"
+          onClick={() => onSelect("test-cold")}
         >
           <div className="module-card-icon" style={{ background: "linear-gradient(135deg, #10b981, #059669)", boxShadow: "0 4px 14px rgba(16,185,129,.35)" }}>
             <ClipboardCheck size={36} />
           </div>
           <div className="module-card-body">
-            <div className="module-card-title">Safety Knowledge Test</div>
+            <div className="module-card-title">Cold Work Permit Test</div>
             <div className="module-card-desc">
-              Conduct a 50-question objective safety test. The worker must answer 33% correctly to pass.
+              Conduct a 50-question test covering Cold Work rules and hazards.
             </div>
             <div className="module-card-pills">
               <span className="module-pill">50 Questions</span>
-              <span className="module-pill">Randomized</span>
               <span className="module-pill">Pass: 33%</span>
             </div>
           </div>

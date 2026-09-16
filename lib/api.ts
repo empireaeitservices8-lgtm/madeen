@@ -135,8 +135,8 @@ export interface TestAttempt {
   passed: boolean;
 }
 
-export async function getTestQuestions(workerId: number): Promise<TestQuestion[]> {
-  return request(`/api/test/start/${workerId}`);
+export async function getTestQuestions(workerId: number, category: string = "general"): Promise<TestQuestion[]> {
+  return request(`/api/test/start/${workerId}?category=${category}`);
 }
 
 export async function submitTest(

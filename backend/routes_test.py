@@ -23,7 +23,7 @@ class SubmitTestRequest(BaseModel):
     answers: List[AnswerItem]
 
 @router.get("/api/test/start/{worker_id}")
-def start_test(worker_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def start_test(worker_id: int, category: str = "general", user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Fetch 50 random questions for a worker."""
     worker = db.get(Worker, worker_id)
     if not worker:
@@ -33,12 +33,12 @@ def start_test(worker_id: int, user: User = Depends(get_current_user), db: Sessi
     # Get total count of questions
     # Note: For SQLite, order_by(func.random()).limit(50) is fine for 1000 rows.
     from sqlalchemy.sql.expression import func
-    questions = db.scalars(select(Question).order_by(func.random()).limit(50)).all()
+    questions = db.scalars(select(Question).where(Question.category == category).order_by(func.random()).limit(50)).all()
     
     if len(questions) < 50:
         # Fallback if fewer than 50 questions exist
         if not questions:
-            raise HTTPException(500, "No questions found in database.")
+            raise HTTPException(500, f"No questions found in database for category: {category}")
     
     # Do not send correct_answer to the frontend!
     return [
