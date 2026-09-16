@@ -28,12 +28,17 @@ from routes_test import router as test_router
 from routes_tool import router as tool_router
 
 
+import asyncio
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
     with SessionLocal() as db:
         ensure_default_admin(db)
-    await run_in_threadpool(detector.load_models)  # load + warm up before the first scan
+    
+    # Load models in the background so we don't block Uvicorn from binding to the port!
+    # Render times out if the port isn't bound within a few minutes.
+    asyncio.create_task(run_in_threadpool(detector.load_models))
     yield
 
 
